@@ -1,0 +1,197 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Typecheck and lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+  security-scan:
+    name: Security and policy scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify env tracking policy
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if git ls-files --error-unmatch .env.local >/dev/null 2>&1; then
+            echo ".env.local must not be tracked."
+            exit 1
+          fi
+
+          tracked_env_files="$(git ls-files '.env*' || true)"
+          if [ -n "$tracked_env_files" ]; then
+            while IFS= read -r file; do
+              [ -z "$file" ] && continue
+              if [ "$file" != ".env.example" ]; then
+                echo "Unsafe env file is tracked."
+                exit 1
+              fi
+            done <<< "$tracked_env_files"
+          fi
+
+          if ! git ls-files --error-unmatch .env.example >/dev/null 2>&1; then
+            echo ".env.example is missing from tracked files."
+            exit 1
+          fi
+
+      - name: Scan for secret-like key names in client-visible paths
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SCAN_PATHS=()
+          for p in app components frontend lib; do
+            if [ -e "$p" ]; then
+              SCAN_PATHS+=("$p")
+            fi
+          done
+
+          if [ ${#SCAN_PATHS[@]} -gt 0 ]; then
+            if grep -RIE \
+              --exclude-dir=node_modules \
+              --exclude-dir=.next \
+              --exclude-dir=.git \
+              --exclude='*.map' \
+              'SUPABASE_SERVICE_ROLE_KEY|SMTP_PASS|OTP_HASH_SECRET|RESEND_API_KEY|PRIVATE_KEY' \
+              "${SCAN_PATHS[@]}" >/dev/null 2>&1; then
+              echo "Forbidden secret-like key name found in client-visible paths."
+              exit 1
+            fi
+          fi
+
+      - name: Scan for forbidden auth wording
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SCAN_PATHS=()
+          for p in app components frontend lib; do
+            if [ -e "$p" ]; then
+              SCAN_PATHS+=("$p")
+            fi
+          done
+
+          if [ ${#SCAN_PATHS[@]} -gt 0 ]; then
+            if grep -RIEi \
+              --exclude-dir=node_modules \
+              --exclude-dir=.next \
+              --exclude-dir=.git \
+              'reset link|magic link' \
+              "${SCAN_PATHS[@]}" >/dev/null 2>&1; then
+              echo "Forbidden reset-link/magic-link wording found."
+              exit 1
+            fi
+          fi
+
+      - name: Scan public admin exposure
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -d "components/nextedge/public" ]; then
+            if grep -RIn \
+              --exclude-dir=node_modules \
+              --exclude-dir=.next \
+              --exclude-dir=.git \
+              'nextedge-secure-admin-access' \
+              components/nextedge/public >/dev/null 2>&1; then
+              echo "Public admin route exposure found in public components."
+              exit 1
+            fi
+          fi
+
+          AUTH_SURFACE_PATHS=()
+          for p in "components/auth" "app/(auth)/candidate-login" "app/(auth)/employer-login"; do
+            if [ -e "$p" ]; then
+              AUTH_SURFACE_PATHS+=("$p")
+            fi
+          done
+
+          if [ ${#AUTH_SURFACE_PATHS[@]} -gt 0 ]; then
+            if grep -RIn \
+              --exclude-dir=node_modules \
+              --exclude-dir=.next \
+              --exclude-dir=.git \
+              'nextedge-secure-admin-access/recovery' \
+              "${AUTH_SURFACE_PATHS[@]}" >/dev/null 2>&1; then
+              echo "Admin recovery exposure found in public/candidate/employer auth surfaces."
+              exit 1
+            fi
+          fi
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs:
+      - quality
+      - security-scan
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  compatibility:
+    name: Lint and build
+    runs-on: ubuntu-latest
+    needs:
+      - quality
+      - security-scan
+      - build
+
+    steps:
+      - name: CI completed
+        run: echo "All CI quality gates passed."

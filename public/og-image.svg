@@ -1,0 +1,70 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="1120" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#050A18"/>
+      <stop offset="0.55" stop-color="#0A1733"/>
+      <stop offset="1" stop-color="#123C84"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(986 78) rotate(141.8) scale(418 254)">
+      <stop stop-color="#45F2FF" stop-opacity="0.36"/>
+      <stop offset="1" stop-color="#45F2FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(162 572) rotate(-35.7) scale(460 250)">
+      <stop stop-color="#2E6EFF" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#2E6EFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#10336E"/>
+      <stop offset="1" stop-color="#0D224A"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glowA)"/>
+  <rect width="1200" height="630" fill="url(#glowB)"/>
+
+  <g opacity="0.2" stroke="#36548D">
+    <path d="M0 70H1200"/>
+    <path d="M0 154H1200"/>
+    <path d="M0 238H1200"/>
+    <path d="M0 322H1200"/>
+    <path d="M0 406H1200"/>
+    <path d="M0 490H1200"/>
+    <path d="M0 574H1200"/>
+    <path d="M80 0V630"/>
+    <path d="M188 0V630"/>
+    <path d="M296 0V630"/>
+    <path d="M404 0V630"/>
+    <path d="M512 0V630"/>
+    <path d="M620 0V630"/>
+    <path d="M728 0V630"/>
+    <path d="M836 0V630"/>
+    <path d="M944 0V630"/>
+    <path d="M1052 0V630"/>
+    <path d="M1160 0V630"/>
+  </g>
+
+  <rect x="84" y="62" width="146" height="52" rx="26" fill="#EAF1FF"/>
+  <text x="126" y="96" fill="#0C1730" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="700">N</text>
+  <text x="248" y="98" fill="#EAF1FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" letter-spacing="-0.6">NEXTEDGE Talent Consultancy</text>
+
+  <text x="84" y="238" fill="#F6FAFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="78" font-weight="700" letter-spacing="-1.8">Verified hiring.</text>
+  <text x="84" y="318" fill="#8CD4FF" font-family="Georgia,Times New Roman,serif" font-style="italic" font-size="74" font-weight="500" letter-spacing="-1">Privacy-first company reveal.</text>
+  <text x="84" y="390" fill="#B6C8E8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="33" font-weight="500">Membership unlocks apply access. Company identity appears only after shortlist.</text>
+
+  <g>
+    <rect x="84" y="472" width="168" height="52" rx="26" fill="url(#chip)" stroke="#2D61BD"/>
+    <text x="132" y="505" fill="#DCE9FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="600">Jobs</text>
+
+    <rect x="272" y="472" width="224" height="52" rx="26" fill="url(#chip)" stroke="#2D61BD"/>
+    <text x="320" y="505" fill="#DCE9FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="600">Subscription</text>
+
+    <rect x="516" y="472" width="360" height="52" rx="26" fill="url(#chip)" stroke="#2D61BD"/>
+    <text x="564" y="505" fill="#DCE9FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="600">Staged Public Modules</text>
+  </g>
+
+  <rect x="894" y="420" width="222" height="142" rx="20" fill="#0C1833" stroke="#315EAF"/>
+  <text x="924" y="468" fill="#7ECFFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="600">Offer</text>
+  <text x="924" y="518" fill="#EAF3FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="56" font-weight="700">₹99</text>
+  <text x="1058" y="518" fill="#B8CCE9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="500">/mo</text>
+</svg>
